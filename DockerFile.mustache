@@ -11,27 +11,27 @@ RUN ./gradlew --no-daemon downloadDependencies -PexternallySuppliedVersion=$VERS
 RUN ./gradlew --no-daemon buildReleaseCandidate stageDockerArtifacts -PexternallySuppliedVersion=$VERSION
 
 # copy artifacts and package image
-FROM {{baseContainerImage}}
-
-RUN /usr/sbin/addgroup {{runAsGroup}} \
-&& /usr/sbin/adduser -D {{runAsUser}} -G {{runAsGroup}}
+FROM {{baseExecContainerImage}}
+RUN yum -y update \
+ && {{baseExecContainerImageExtras}} \
+ && yum -y install {{baseImageJDK}} \
+ && yum clean all \
+## Install envconsul
+ && yum -y install openssl tar.x86_64 \
+ && curl -o envconsul.tgz -L {{envConsulTgz}} \ 
+ && tar -xvzf envconsul.tgz \
+ && ln -sf $PWD/envconsul /usr/local/bin \
+## Configure app user and group
+ && /usr/sbin/addgroup {{runAsGroup}} \
+ && /usr/sbin/adduser -D {{runAsUser}} -G {{runAsGroup}}
 
 WORKDIR /home/app
 COPY --from=builder /home/builder/build/docker/* ./
 
 RUN chown app /home/app/shim.sh \
-&& chmod 700 /home/app/shim.sh
-
-## Install envconsul
-USER root
-
-RUN apk add --update ca-certificates openssl \
-&& update-ca-certificates \
-&& wget -O envconsul.tgz https://github.com/the-container-store/envconsul/releases/download/0.7.3-42-eba5c96/envconsul_0.7.3-42-eba5c96_linux-amd64.tgz \
-&& tar -xvzf envconsul.tgz \
-&& ln -sf $PWD/envconsul /usr/local/bin
+ && chmod 700 /home/app/shim.sh
 
 USER {{runAsUser}}
 EXPOSE {{exposePort}}
 
-ENTRYPOINT envconsul -config "/home/app/{{consulConfigurationFileName}}"
+ENTRYPOINT envconsul -config="/home/app/{{consulConfigurationFileName}}"
