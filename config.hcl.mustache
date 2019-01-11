@@ -12,9 +12,17 @@ upcase = true
 
 once = true
 
+# This block is for loading properties from Consul
 prefix {
     no_prefix = true
     path      = "/app/{{=<% %>=}}{{env \"DEPLOYMENT_ENVIRONMENT\"}}<%={{ }}=%>/{{project.name}}"
+}
+
+# This block is for loading secrets from vault
+secret {
+    no_prefix = true
+    format = "{{project.name}}-{{ key }}"
+    path= "secret/service/{{=<% %>=}}{{env \"DEPLOYMENT_ENVIRONMENT\"}}<%={{ }}=%>/{{project.name}}"
 }
 
 log_level = "debug"
