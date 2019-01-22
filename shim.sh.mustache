@@ -1,7 +1,7 @@
 #!/bin/sh
 
 {{#vault.environmentVariables}}
-export {{name}}=$(vault read -field={{key}} {{path}})
+export {{name}}=$(vault read -field={{key}} {{secret}})
 {{/vault.environmentVariables}}
 
 java \
@@ -11,6 +11,6 @@ java \
   -Dserver.use-forward-headers=true \
   ${JAVA_OPTS} \
 {{#vault.systemProperties}}
-  -D{{name}}=$(vault read -field={{key}} {{path}}) \
+  -D{{name}}=$(vault read -field={{key}} {{secret}}) \
 {{/vault.systemProperties}}
   -jar /home/{{runAsUser}}/{{buildArtifactName}}
