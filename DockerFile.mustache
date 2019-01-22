@@ -11,11 +11,11 @@ RUN ./gradlew --no-daemon downloadDependencies -PexternallySuppliedVersion=$VERS
 RUN ./gradlew --no-daemon buildReleaseCandidate stageDockerArtifacts -PexternallySuppliedVersion=$VERSION
 
 # copy artifacts and package image
-FROM {{baseContainerImage}}
+FROM {{baseExecImage}}
 
 USER root
 
-RUN ./{{osPackageManager}}-install-prerequisites.sh \
+RUN ./{{baseExecImagePackageManager}}-install-prerequisites.sh \
 #
 # Install envconsul
 #
