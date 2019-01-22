@@ -1,25 +1,16 @@
 #!/bin/sh
 
-read_file() {
-  if [ ! -f $1 ]; then
-  >&2 echo "WARN: File $1 was not found!"
-  echo ""
-  else
-  echo $(cat $1)
-  fi
-}
-
 {{#vault.environmentVariables}}
-export {{name}}=$(read_file {{path}})
+export {{name}}=$(vault read -field={{key}} {{path}})
 {{/vault.environmentVariables}}
 
 java \
   -Ddeployment.environment=${DEPLOYMENT_ENVIRONMENT} \
   -Ddeployment.stack=${DEPLOYMENT_STACK} \
   -Dlogging.console.enabled=true \
-    -Dserver.use-forward-headers=true \
+  -Dserver.use-forward-headers=true \
   ${JAVA_OPTS} \
 {{#vault.systemProperties}}
-  -D{{name}}=$(read_file {{path}}) \
+  -D{{name}}=$(vault read -field={{key}} {{path}}) \
 {{/vault.systemProperties}}
   -jar /home/{{runAsUser}}/{{buildArtifactName}}

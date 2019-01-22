@@ -27,11 +27,13 @@ USER root
 
 RUN apk add --update ca-certificates openssl \
 && update-ca-certificates \
-&& wget -O envconsul.tgz https://github.com/the-container-store/envconsul/releases/download/0.7.3-42-eba5c96/envconsul_0.7.3-42-eba5c96_linux-amd64.tgz \
-&& tar -xvzf envconsul.tgz \
-&& ln -sf $PWD/envconsul /usr/local/bin
+&& wget -q -O consul-template.zip https://releases.hashicorp.com/consul-template/0.19.5/consul-template_0.19.5_linux_386.zip \
+&& unzip consul-template.zip -d /usr/local/bin \
+&& rm consul-template.zip \
 
 USER {{runAsUser}}
 EXPOSE {{exposePort}}
 
-ENTRYPOINT envconsul -config "/home/app/{{consulConfigurationFileName}}"
+CMD consul-template \
+        -exec-reload-signal=SIGUSR1 \
+        -exec "/bin/bash -c \"trap '' SIGUSR1; /home/app/shim.sh\""
