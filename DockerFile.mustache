@@ -22,7 +22,7 @@ COPY --from=builder /home/builder/build/docker/* ./
 #
 RUN chown root /home/app/yum-install-prerequisites.sh \
 && chmod 700 /home/app/yum-install-prerequisites.sh \
-&& /home/app/yum-install-prerequisites.sh \
+&& /home/app/yum-install-prerequisites.sh
 
 USER {{runAsUser}}
 EXPOSE {{exposePort}}
