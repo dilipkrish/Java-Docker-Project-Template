@@ -13,7 +13,6 @@ RUN ./gradlew --no-daemon buildReleaseCandidate stageDockerArtifacts -Pexternall
 # copy artifacts and package image
 FROM {{baseExecImage}}
 
-USER root
 WORKDIR /home/app
 COPY --from=builder /home/builder/build/docker/* ./
 

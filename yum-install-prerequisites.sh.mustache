@@ -8,5 +8,5 @@ yum -y update \
   && rm consul-template.zip \
   && /usr/sbin/groupadd applications \
   && /usr/sbin/useradd app -G applications \
-  && chown app /home/app/shim.sh \
-  && chmod 700 /home/app/shim.sh
+  && chown -R app /home/app \
+  && chmod +x /home/app/shim.sh

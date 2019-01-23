@@ -1,6 +1,6 @@
 #!/bin/sh
 {{=<% %>=}}
-{{- $environment                := env "DEPLOYMENT_ENVIRONMENT" -}}
+{{ $environment                := env "DEPLOYMENT_ENVIRONMENT" }}
 
 <%#vault.environmentVariables %>
 export <% name %>='{{ with secret (printf "<% secret %>" $environment) }}{{ index .Data "<% key %>" }}{{ end }}'
