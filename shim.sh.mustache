@@ -1,7 +1,9 @@
 #!/bin/sh
 {{=<% %>=}}
+{{- $environment                := env "DEPLOYMENT_ENVIRONMENT" -}}
+
 <%#vault.environmentVariables %>
-export <% name %>="{{ with secret "<% secret %>" }}{{ index .Data "<% key %>" }}{{ end }}"
+export <% name %>='{{ with secret (printf "<% secret %>" $environment) }}{{ index .Data "<% key %>" }}{{ end }}'
 <%/vault.environmentVariables%>
 
 java \

@@ -28,5 +28,6 @@ USER {{runAsUser}}
 EXPOSE {{exposePort}}
 
 CMD consul-template \
+        -template "/home/app/shim.sh:/home/app/shim.sh" \
         -exec-reload-signal=SIGUSR1 \
         -exec "/bin/bash -c \"trap '' SIGUSR1; /home/app/shim.sh\""
