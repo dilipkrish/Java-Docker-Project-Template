@@ -3,7 +3,8 @@ yum -y update \
   && amazon-linux-extras enable corretto8 \
   && yum -y install java-1.8.0-amazon-corretto-devel-1.8.0_192.b12-1.amzn2 openssl tar.x86_64 curl unzip \
   && yum clean all \
-  && curl --output consul-template.zip https://releases.hashicorp.com/consul-template/0.19.5/consul-template_0.19.5_linux_386.zip \
+  && curl -s --output consul-template.zip https://releases.hashicorp.com/consul-template/0.19.5/consul-template_0.19
+.5_linux_386.zip \
   && unzip consul-template.zip -d /usr/local/bin \
   && rm consul-template.zip \
   && /usr/sbin/groupadd applications \
