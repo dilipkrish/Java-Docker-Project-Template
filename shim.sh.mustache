@@ -1,8 +1,8 @@
 #!/bin/sh
-
-{{#vault.environmentVariables}}
-export {{name}}=$(vault read -field={{key}} {{secret}})
-{{/vault.environmentVariables}}
+{{=<% %>=}}
+<%#vault.environmentVariables %>
+export <% name %>={{ with secret "<% secret %>" }}{{ index .Data "<% key %>" }}{{ end }}"
+<%/vault.environmentVariables%>
 
 java \
   -Ddeployment.environment=${DEPLOYMENT_ENVIRONMENT} \
@@ -10,7 +10,8 @@ java \
   -Dlogging.console.enabled=true \
   -Dserver.use-forward-headers=true \
   ${JAVA_OPTS} \
-{{#vault.systemProperties}}
-  -D{{name}}=$(vault read -field={{key}} {{secret}}) \
-{{/vault.systemProperties}}
+<%#vault.systemProperties %>
+export <% name %>={{ with secret "<% secret %>" }}{{ index .Data "<% key %>" }}{{ end }}"
+<%/vault.systemProperties%>
   -jar /home/{{runAsUser}}/{{buildArtifactName}}
+<%={{ }}=%>
