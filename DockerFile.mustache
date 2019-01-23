@@ -14,25 +14,15 @@ RUN ./gradlew --no-daemon buildReleaseCandidate stageDockerArtifacts -Pexternall
 FROM {{baseExecImage}}
 
 USER root
-
-RUN ./{{baseExecImagePackageManager}}-install-prerequisites.sh \
-#
-# Install envconsul
-#
-&& wget -q -O consul-template.zip https://releases.hashicorp.com/consul-template/0.19.5/consul-template_0.19.5_linux_386.zip \
-&& unzip consul-template.zip -d /usr/local/bin \
-&& rm consul-template.zip \
-#
-# Configure app user and group
-#
-&& usr/sbin/addgroup {{runAsGroup}} \
-&& /usr/sbin/adduser -D {{runAsUser}} -G {{runAsGroup}}
-
 WORKDIR /home/app
 COPY --from=builder /home/builder/build/docker/* ./
 
-RUN chown app /home/app/shim.sh \
-&& chmod 700 /home/app/shim.sh
+#
+# Install prerequisites
+#
+RUN chown root /home/app/yum-install-prerequisites.sh \
+&& chmod 700 /home/app/yum-install-prerequisites.sh \
+&& /home/app/yum-install-prerequisites.sh \
 
 USER {{runAsUser}}
 EXPOSE {{exposePort}}
