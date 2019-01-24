@@ -1,15 +1,23 @@
 #!/usr/bin/env bash
 set -e
+local YELLOW='\033[1;33'
+local NC='\033[0m' # No Color
 
 if [ $# -eq 0 ]; then
     echo "Usage: $0 [image-id|repository:tag]"
-    echo "Expecting the image id (sha) or repository:tag"
+    echo "Expecting the image id ${YELLOW}sha${NC} or ${YELLOW}repository:tag${NC}"
     exit 1
 fi
 
 if [ -z $DEPLOYMENT_ENVIRONMENT ]; then
-  echo "Ensure you have hte deployment environment set"
+  printf "Ensure you have the ${YELLOW}DEPLOYMENT_ENVIRONMENT${NC} variable is set\n"
   exit 1
+fi
+
+command -v foo >/dev/null 2>&1 || { printf >&2 "vault (${YELLOW}https://www.vaultproject.io${NC}) is required. Ensure it is installed\n"; exit 1; }
+
+if [ ! -f ~/.vault-token ]; then
+  echo "Please login to vault using ${YELLOW}vault login${NC}"
 fi
 
 docker run \
