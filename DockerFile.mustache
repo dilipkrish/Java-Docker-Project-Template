@@ -15,8 +15,6 @@ COPY . /home/builder/
 
 ARG VERSION
 
-RUN ./gradlew --no-daemon downloadDependencies -PexternallySuppliedVersion=$VERSION
-
 RUN ./gradlew --no-daemon buildReleaseCandidate stageDockerArtifacts -PexternallySuppliedVersion=$VERSION
 
 # copy artifacts and package image
@@ -28,9 +26,7 @@ COPY --from=builder /home/builder/build/docker/* ./
 #
 # Install prerequisites
 #
-RUN chown root /home/app/yum-install-prerequisites.sh \
-&& chmod 700 /home/app/yum-install-prerequisites.sh \
-&& /home/app/yum-install-prerequisites.sh
+RUN /home/app/yum-install-prerequisites.sh
 
 USER {{runAsUser}}
 EXPOSE {{exposePort}}
