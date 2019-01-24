@@ -8,14 +8,23 @@
 # in http://the-container-store.github.io/Gradle-Releaser/ to see
 # how to regenerate this file based on your project settings.
 #------------------------------------------------------------------------------
-yum -y update \
-  && amazon-linux-extras enable corretto8 \
-  && yum -y install java-1.8.0-amazon-corretto-devel-1.8.0_192.b12-1.amzn2 openssl tar.x86_64 curl unzip \
-  && yum clean all \
-  && curl -s --output consul-template.zip https://releases.hashicorp.com/consul-template/0.19.5/consul-template_0.19.5_linux_386.zip \
-  && unzip consul-template.zip -d /usr/local/bin \
-  && rm consul-template.zip \
-  && /usr/sbin/groupadd applications \
-  && /usr/sbin/useradd app -G applications \
-  && chown -R app /home/app \
-  && chmod +x /home/app/shim.sh
+
+## Install the corretto dependencies
+yum -y update
+amazon-linux-extras enable corretto8
+yum -y install java-1.8.0-amazon-corretto-devel-1.8.0_192.b12-1.amzn2 openssl tar.x86_64 curl unzip
+yum clean all
+
+
+## Install consul templates
+curl -s --output consul-template.zip https://releases.hashicorp.com/consul-template/0.19.5/consul-template_0.19.5_linux_386.zip
+unzip consul-template.zip -d /usr/local/bin
+rm consul-template.zip
+
+## Add user space user
+/usr/sbin/groupadd applications
+/usr/sbin/useradd app -G applications
+
+## Grant permissions to the app user to run the shim.sh executable
+chown -R app /home/app
+chmod +x /home/app/shim.sh
