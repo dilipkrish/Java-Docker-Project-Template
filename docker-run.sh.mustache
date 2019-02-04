@@ -31,7 +31,6 @@ fi
 
 docker run \
   -p 8080:8080 \
-  -v $(pwd)/build/secrets:/etc/secrets/service/salesforce/salesforce_services_app:ro \
   -e DEPLOYMENT_ENVIRONMENT=$DEPLOYMENT_ENVIRONMENT \
   -e DEPLOYMENT_STACK=preview \
   -e VAULT_ADDR=https://vault.containerstore.com \
